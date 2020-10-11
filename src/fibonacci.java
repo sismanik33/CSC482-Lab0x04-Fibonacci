@@ -7,7 +7,7 @@ import java.util.Hashtable;
 
 public class fibonacci {
     public static int NUM_TESTS = 90;
-    public static long MAX_WAIT = 3000000000L;
+    public static long MAX_WAIT = 10000000000L;
 //    public static Hashtable<Long, Long> cache = new Hashtable<Long, Long>();
     public static long[] cache = new long[NUM_TESTS];
 
@@ -137,7 +137,7 @@ public class fibonacci {
             }
             else
                 if (x % 2 == 0 && x >= 4)
-                    System.out.format("%15s%15s%15s", timings[0][(int) x], (float)timings[0][(int) x] / timings[0][(int) x/2], Math.pow(2,x/2) / Math.pow(2, x/4) );
+                    System.out.format("%15s%15s%15.5f", timings[0][(int) x], (float)timings[0][(int) x] / timings[0][(int) x/2], Math.pow(2,(x/2)) / Math.pow(2, (float)x/4) );
                 else
                     System.out.format("%15s%15s%15s", timings[0][(int) x], "-", "-");
             if (x % 2 == 0)
@@ -160,47 +160,37 @@ public class fibonacci {
 
     public static void RunTests(long x, int currTest, long[][] timings, long overhead){
         long cumulativeTime = 0;
-        int testsRun = 0;
-        long after, before;
+        int testsToRun = 20;
 
-        for (int i = 0; i < 20; i++) {
+        long before = getCpuTime();
+        for (int i = 0; i < testsToRun; i++) {
             if(currTest == 0){
-                before = getCpuTime();
                 fibRecur(x);
-                after = getCpuTime();
             } else if ( currTest == 1){
-                before = getCpuTime();
                 fibCache(x);
-                after = getCpuTime();
             } else if (currTest == 2) {
-                before = getCpuTime();
                 fibLoop(x);
-                after = getCpuTime();
             } else{
-                before = getCpuTime();
                 fibMatrix(x);
-                after = getCpuTime();
             }
-            testsRun++;
-            cumulativeTime += after - before;
         }
-        long avgTime = cumulativeTime/testsRun;
-        timings[currTest][(int) x] = avgTime;
+        long after = getCpuTime();
+        long avgTime = (after - before)/testsToRun;
+        timings[currTest][(int) x] = avgTime - overhead;
     }
 
     public static long calculateOverhead(){
 //        long cumulativeTime = 0;
-        int testsToRun = 10000;
-        long[] times = new long[testsToRun];
+        int testsToRun = 100000;
+//        long[] times = new long[testsToRun];
+        long before = getCpuTime();
         for (int i = 0; i < testsToRun; i++) {
-            long before = getCpuTime();
-            long after = getCpuTime();
-            times[i] = after - before;
-//            cumulativeTime += after - before;
+
         }
-//        long overhead = cumulativeTime / testsToRun;
-        Arrays.sort(times);
-        long overhead = times[testsToRun/2];
+        long after = getCpuTime();
+        long overhead = ( after - before ) / testsToRun;
+//        Arrays.sort(times);
+//        long overhead = times[testsToRun/2];
         return overhead;
     }
 
