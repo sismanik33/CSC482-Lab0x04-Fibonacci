@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 public class fibonacci {
-    public static int NUM_TESTS = 90;
-    public static long MAX_WAIT = 10000000000L;
+    public static int NUM_TESTS = 93;
+    public static long MAX_WAIT = 15000000000L;
 //    public static Hashtable<Long, Long> cache = new Hashtable<Long, Long>();
     public static long[] cache = new long[NUM_TESTS];
 
@@ -63,11 +63,11 @@ public class fibonacci {
         return B;
     }
 
-    public static long fibMatrix(long n){
+    public static long fibMatrix(long x){
         long F[][] = new long[][]{{1,1},{1,0}};
-        if (n == 0)
+        if (x == 0)
             return 0;
-        power(F, n-1);
+        power(F, x-1);
 
         return F[0][0];
     }
@@ -130,7 +130,7 @@ public class fibonacci {
                 else
                     timings[i][(int) x] = 0;
             }
-            System.out.format("%5s |%5s|", x, Math.ceil( (Math.log(x+1) /Math.log(2) ) ) );
+            System.out.format("%5s |%5s |", x, Math.ceil( (Math.log(x+1) /Math.log(2) ) ) );
             if (timings[0][(int) x] > MAX_WAIT || timings[0][(int) x] == 0) {
                 System.out.format("%15s%15s%15s", "NA", "NA", "NA");
                 continueTesting[0] = false;
