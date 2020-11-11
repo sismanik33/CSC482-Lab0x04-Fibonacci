@@ -1,22 +1,24 @@
 import java.io.Console;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Hashtable;
 
 public class fibonacci {
     public static int NUM_TESTS = 93;
-    public static long MAX_WAIT = 100000000L;
+    public static long MAX_WAIT = 15000000000L;
 //    public static Hashtable<Long, Long> cache = new Hashtable<Long, Long>();
     public static long[] cache = new long[NUM_TESTS];
 
     public static void main(String[] args) {
 
-//        testFunctionResults();
+//        long fibTest = fibCache(50);
+//        System.out.println(fibTest);
+//            testFunctionResults();
         TestSetup();
-//
+//        long result = Power(6,6);
+//        System.out.println(result);
 
     }
 
@@ -46,6 +48,8 @@ public class fibonacci {
         }
     }
 
+//    173,402,521,172,797,813,159,685,037,284,371,942,044,301
+
     public static long fibLoop(long x){
         long A = 0;
         long B = 1;
@@ -59,12 +63,11 @@ public class fibonacci {
         return B;
     }
 
-    //adapted from code found at: https://marvinraval.medium.com/why-we-calculate-fibonacci-numbers-601762177277
-    public static long fibMatrix(long n){
+    public static long fibMatrix(long x){
         long F[][] = new long[][]{{1,1},{1,0}};
-        if (n == 0)
+        if (x == 0)
             return 0;
-        power(F, n-1);
+        power(F, x-1);
 
         return F[0][0];
     }
@@ -84,40 +87,26 @@ public class fibonacci {
 
     static void power(long F[][], long n)
     {
-        if(n==0 || n==1) return;
-        power(F,n/2);
-        multiply(F,F);
 
-        long m[][]={{1,1},{1,0} };
-        if(n%2!=0)
-            multiply(F,m);
+        long M[][] = new long[][]{{1,1},{1,0}};
+
+        // n - 1 times multiply the matrix to {{1,0},{0,1}}
+        for (int i = 2; i <= n; i++)
+            multiply(F, M);
     }
 
     public static void testFunctionResults(){
         boolean failedTest = false;
-        int max_X = 93;
-        System.out.format("%5s%25s%25s%25s%25s\n", "x", "fibRecur:", "fibCache:", "fibLoop", "fibMatrix");
-        long a;
+        int max_X = 41;
         for (int i = 0; i < max_X; i++) {
-            if(i < 40)
-                a = fibRecur(i);
-            else
-                a = -1;
+            long a = fibRecur(i);
             long b = fibCache(i);
             long c = fibLoop(i);
             long d = fibMatrix(i);
 
-            if (a >= 0){
-                System.out.format("%5s%25s%25s%25s%25s\n", i, a, b, c, d);
-                if (a != b || b != c || c != d) {
-                    failedTest = true;
-                }
-            }
-            else{
-                System.out.format("%5s%25s%25s%25s%25s\n", i, "NA", b, c, d);
-                if (b != c || c != d) {
-                    failedTest = true;
-                }
+            if (a != b || b != c || c != d) {
+                System.out.println("For x: " + i + ". fibRecur = " + a + " fibCache = " + b + " fibLoop = " + c + " fibMatrix = " + d);
+                failedTest = true;
             }
         }
         if (failedTest)
@@ -141,7 +130,7 @@ public class fibonacci {
                 else
                     timings[i][(int) x] = 0;
             }
-            System.out.format("%5s |%5s|", x, Math.ceil( (Math.log(x+1) /Math.log(2) ) ) );
+            System.out.format("%5s |%5s |", x, Math.ceil( (Math.log(x+1) /Math.log(2) ) ) );
             if (timings[0][(int) x] > MAX_WAIT || timings[0][(int) x] == 0) {
                 System.out.format("%15s%15s%15s", "NA", "NA", "NA");
                 continueTesting[0] = false;
@@ -171,7 +160,7 @@ public class fibonacci {
 
     public static void RunTests(long x, int currTest, long[][] timings, long overhead){
         long cumulativeTime = 0;
-        int testsToRun = 50;
+        int testsToRun = 20;
 
         long before = getCpuTime();
         for (int i = 0; i < testsToRun; i++) {
@@ -192,11 +181,11 @@ public class fibonacci {
 
     public static long calculateOverhead(){
 //        long cumulativeTime = 0;
-        int testsToRun = 1000;
+        int testsToRun = 100000;
 //        long[] times = new long[testsToRun];
         long before = getCpuTime();
         for (int i = 0; i < testsToRun; i++) {
-            int j = i;
+
         }
         long after = getCpuTime();
         long overhead = ( after - before ) / testsToRun;
